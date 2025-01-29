@@ -1559,6 +1559,8 @@ void ShowPlotContextMenu(ImPlotPlot& plot) {
             ImFlipFlag(plot.Flags, ImPlotFlags_Equal);
         if (ImGui::MenuItem("Box Select",nullptr,!ImHasFlag(plot.Flags, ImPlotFlags_NoBoxSelect)))
             ImFlipFlag(plot.Flags, ImPlotFlags_NoBoxSelect);
+        if (ImGui::MenuItem("Box Select Zoom",nullptr,!ImHasFlag(plot.Flags, ImPlotFlags_NoBoxSelectZoom)))
+            ImFlipFlag(plot.Flags, ImPlotFlags_NoBoxSelectZoom);
         BeginDisabledControls(plot.TitleOffset == -1);
         if (ImGui::MenuItem("Title",nullptr,plot.HasTitle()))
             ImFlipFlag(plot.Flags, ImPlotFlags_NoTitle);
@@ -2031,24 +2033,26 @@ bool UpdateInput(ImPlotPlot& plot) {
         const bool y_can_change = !ImHasFlag(IO.KeyMods,gp.InputMap.SelectVertMod) && ImFabs(d.y) > 2;
         // confirm
         if (IO.MouseReleased[gp.InputMap.Select]) {
-            for (int i = 0; i < IMPLOT_NUM_X_AXES; i++) {
-                ImPlotAxis& x_axis = plot.XAxis(i);
-                if (!x_axis.IsInputLocked() && x_can_change) {
-                    const double p1 = x_axis.PixelsToPlot(plot.SelectStart.x);
-                    const double p2 = x_axis.PixelsToPlot(IO.MousePos.x);
-                    x_axis.SetMin(ImMin(p1, p2));
-                    x_axis.SetMax(ImMax(p1, p2));
-                    changed = true;
+            if (!ImHasFlag(plot.Flags, ImPlotFlags_NoBoxSelectZoom)) {
+                for (int i = 0; i < IMPLOT_NUM_X_AXES; i++) {
+                    ImPlotAxis& x_axis = plot.XAxis(i);
+                    if (!x_axis.IsInputLocked() && x_can_change) {
+                        const double p1 = x_axis.PixelsToPlot(plot.SelectStart.x);
+                        const double p2 = x_axis.PixelsToPlot(IO.MousePos.x);
+                        x_axis.SetMin(ImMin(p1, p2));
+                        x_axis.SetMax(ImMax(p1, p2));
+                        changed = true;
+                    }
                 }
-            }
-            for (int i = 0; i < IMPLOT_NUM_Y_AXES; i++) {
-                ImPlotAxis& y_axis = plot.YAxis(i);
-                if (!y_axis.IsInputLocked() && y_can_change) {
-                    const double p1 = y_axis.PixelsToPlot(plot.SelectStart.y);
-                    const double p2 = y_axis.PixelsToPlot(IO.MousePos.y);
-                    y_axis.SetMin(ImMin(p1, p2));
-                    y_axis.SetMax(ImMax(p1, p2));
-                    changed = true;
+                for (int i = 0; i < IMPLOT_NUM_Y_AXES; i++) {
+                    ImPlotAxis& y_axis = plot.YAxis(i);
+                    if (!y_axis.IsInputLocked() && y_can_change) {
+                        const double p1 = y_axis.PixelsToPlot(plot.SelectStart.y);
+                        const double p2 = y_axis.PixelsToPlot(IO.MousePos.y);
+                        y_axis.SetMin(ImMin(p1, p2));
+                        y_axis.SetMax(ImMax(p1, p2));
+                        changed = true;
+                    }
                 }
             }
             if (x_can_change || y_can_change || (ImHasFlag(IO.KeyMods,gp.InputMap.SelectHorzMod) && ImHasFlag(IO.KeyMods,gp.InputMap.SelectVertMod)))
