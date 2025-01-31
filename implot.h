@@ -362,7 +362,8 @@ enum ImPlotCol_ {
     ImPlotCol_AxisBg,        // background color of axis hover region (defaults to transparent)
     ImPlotCol_AxisBgHovered, // axis hover color (defaults to ImGuiCol_ButtonHovered)
     ImPlotCol_AxisBgActive,  // axis active color (defaults to ImGuiCol_ButtonActive)
-    ImPlotCol_Selection,     // box-selection color (defaults to yellow)
+    ImPlotCol_Selection,     // selection color (defaults to yellow)
+    ImPlotCol_ZoomBox,       // zoom-box color (defaults to green)
     ImPlotCol_Crosshairs,    // crosshairs color (defaults to ImPlotCol_PlotBorder)
     ImPlotCol_COUNT
 };

@@ -237,6 +237,7 @@ const char* GetStyleColorName(ImPlotCol col) {
         "AxisBgHovered",
         "AxisBgActive",
         "Selection",
+        "ZoomBox",
         "Crosshairs"
     };
     return col_names[col];
@@ -282,6 +283,7 @@ ImVec4 GetAutoColor(ImPlotCol idx) {
         case ImPlotCol_AxisBgHovered: return ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered);
         case ImPlotCol_AxisBgActive:  return ImGui::GetStyleColorVec4(ImGuiCol_ButtonActive);
         case ImPlotCol_Selection:     return ImVec4(1,1,0,1);
+        case ImPlotCol_ZoomBox:       return ImVec4(0,1,0,1);
         case ImPlotCol_Crosshairs:    return GetStyleColorVec4(ImPlotCol_PlotBorder);
         default: return col;
     }
@@ -2898,8 +2900,10 @@ void EndPlot() {
     }
 
     // render selection
-    if (plot.Selected)
-        RenderSelectionRect(DrawList, plot.SelectRect.Min + plot.PlotRect.Min, plot.SelectRect.Max + plot.PlotRect.Min, GetStyleColorVec4(ImPlotCol_Selection));
+    if (plot.Selected) {
+        const auto col = ImHasFlag(plot.Flags, ImPlotFlags_NoBoxSelectZoom) ? ImPlotCol_Selection : ImPlotCol_ZoomBox;
+        RenderSelectionRect(DrawList, plot.SelectRect.Min + plot.PlotRect.Min, plot.SelectRect.Max + plot.PlotRect.Min, GetStyleColorVec4(col));
+    }
 
     // render crosshairs
     if (ImHasFlag(plot.Flags, ImPlotFlags_Crosshairs) && plot.Hovered && !(any_x_held || any_y_held) && !plot.Selecting && !plot.Items.Legend.Hovered) {
@@ -5774,6 +5778,7 @@ void StyleColorsAuto(ImPlotStyle* dst) {
     colors[ImPlotCol_AxisBgHovered] = IMPLOT_AUTO_COL;
     colors[ImPlotCol_AxisBgActive]  = IMPLOT_AUTO_COL;
     colors[ImPlotCol_Selection]     = IMPLOT_AUTO_COL;
+    colors[ImPlotCol_ZoomBox]       = IMPLOT_AUTO_COL;
     colors[ImPlotCol_Crosshairs]    = IMPLOT_AUTO_COL;
 }
 
@@ -5803,6 +5808,7 @@ void StyleColorsClassic(ImPlotStyle* dst) {
     colors[ImPlotCol_AxisBgHovered] = IMPLOT_AUTO_COL; // TODO
     colors[ImPlotCol_AxisBgActive]  = IMPLOT_AUTO_COL; // TODO
     colors[ImPlotCol_Selection]     = ImVec4(0.97f, 0.97f, 0.39f, 1.00f);
+    colors[ImPlotCol_ZoomBox]       = ImVec4(0.39f, 0.97f, 0.39f, 1.00f);
     colors[ImPlotCol_Crosshairs]    = ImVec4(0.50f, 0.50f, 0.50f, 0.75f);
 }
 
@@ -5832,6 +5838,7 @@ void StyleColorsDark(ImPlotStyle* dst) {
     colors[ImPlotCol_AxisBgHovered] = IMPLOT_AUTO_COL; // TODO
     colors[ImPlotCol_AxisBgActive]  = IMPLOT_AUTO_COL; // TODO
     colors[ImPlotCol_Selection]     = ImVec4(1.00f, 0.60f, 0.00f, 1.00f);
+    colors[ImPlotCol_ZoomBox]       = ImVec4(0.00f, 0.60f, 0.00f, 1.00f);
     colors[ImPlotCol_Crosshairs]    = ImVec4(1.00f, 1.00f, 1.00f, 0.50f);
 }
 
@@ -5861,6 +5868,7 @@ void StyleColorsLight(ImPlotStyle* dst) {
     colors[ImPlotCol_AxisBgHovered] = IMPLOT_AUTO_COL; // TODO
     colors[ImPlotCol_AxisBgActive]  = IMPLOT_AUTO_COL; // TODO
     colors[ImPlotCol_Selection]     = ImVec4(0.82f, 0.64f, 0.03f, 1.00f);
+    colors[ImPlotCol_ZoomBox]       = ImVec4(0.03f, 0.82f, 0.03f, 1.00f);
     colors[ImPlotCol_Crosshairs]    = ImVec4(0.00f, 0.00f, 0.00f, 0.50f);
 }
 
