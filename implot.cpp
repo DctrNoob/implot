@@ -151,10 +151,8 @@ You can read releases logs https://github.com/epezent/implot/releases for more d
 
 // Clang/GCC warnings with -Weverything
 #if defined(__clang__)
-#pragma clang diagnostic ignored "-Wconversion"
 #pragma clang diagnostic ignored "-Wformat-nonliteral"  // warning: format string is not a string literal
 #elif defined(__GNUC__)
-#pragma GCC diagnostic ignored "-Wconversion"
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"    // warning: format not a string literal, format string not checked
 #endif
 
