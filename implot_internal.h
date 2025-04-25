@@ -370,7 +370,7 @@ struct ImPlotColormapData {
                 for (int s = 0; s < 255; ++s) {
                     ImU32 a = keys[i];
                     ImU32 b = keys[i+1];
-                    ImU32 c = ImMixU32(a,b,s);
+                    ImU32 c = ImMixU32(a,b,static_cast<ImU32>(s));
                     // if (c != last) {
                         Tables.push_back(c);
                         // last = c;
@@ -1651,16 +1651,16 @@ static inline double TransformInverse_Logit(double v, void*) {
 
 static inline int Formatter_Default(double value, char* buff, int size, void* data) {
     char* fmt = (char*)data;
-    return ImFormatString(buff, size, fmt, value);
+    return ImFormatString(buff, static_cast<size_t>(size), fmt, value);
 }
 
 static inline int Formatter_Logit(double value, char* buff, int size, void*) {
     if (value == 0.5)
-        return ImFormatString(buff,size,"1/2");
+        return ImFormatString(buff,static_cast<size_t>(size),"1/2");
     else if (value < 0.5)
-        return ImFormatString(buff,size,"%g", value);
+        return ImFormatString(buff,static_cast<size_t>(size),"%g", value);
     else
-        return ImFormatString(buff,size,"1 - %g", 1 - value);
+        return ImFormatString(buff,static_cast<size_t>(size),"1 - %g", 1 - value);
 }
 
 struct Formatter_Time_Data {
