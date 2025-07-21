@@ -39,6 +39,13 @@
 #include <time.h>
 #include "imgui_internal.h"
 
+// Prevent conversion warnings
+#if defined(__clang__)
+  #pragma clang diagnostic ignored "-Wconversion"
+#elif defined(__GNUC__)
+  #pragma GCC diagnostic ignored "-Wconversion"
+#endif
+
 // Support for pre-1.84 versions. ImPool's GetSize() -> GetBufSize()
 #if (IMGUI_VERSION_NUM < 18303)
 #define GetBufSize GetSize
